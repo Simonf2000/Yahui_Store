@@ -1,0 +1,21 @@
+package com.atguigu.spzx;
+
+/**
+ * Created with IntelliJ IDEA.
+ *
+ * @Author: smionf
+ * @Date: 2024/02/20/18:24
+ * @Description:
+ */
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class ManagerApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(ManagerApplication.class , args) ;
+    }
+
+}
