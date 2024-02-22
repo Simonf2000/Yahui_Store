@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.spzx.manager.mapper.SysRoleMapper">
+
+    <!--    List<SysRole> findByPage(SysRoleDto sysRoleDto);-->
+
+    <resultMap id="SysRoleResultMap" type="com.atguigu.spzx.model.entity.system.SysRole" autoMapping="true"></resultMap>
+
+    <sql id="colums">
+        id, role_name, role_code, description, create_time, update_time, is_deleted
+    </sql>
+
+    <select id="findByPage" resultMap="SysRoleResultMap">
+        select
+        <include refid="colums"></include>
+        from sys_role
+        <where>
+            <if test="roleName!=null and roleName!=''">
+                and role_name like concat('%',#{roleName},'%')
+            </if>
+            and is_deleted = 0
+        </where>
+        order by id desc
+    </select>
+
+</mapper>
