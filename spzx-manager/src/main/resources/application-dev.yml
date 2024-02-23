@@ -16,6 +16,9 @@ spring:
       host: 192.168.6.100
       port: 6379
       password: root
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
 
 # mybatis的配置
 mybatis:

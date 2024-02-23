@@ -24,15 +24,23 @@ import org.springframework.web.bind.annotation.*;
 public class SysRoleController {
 
     @Autowired
-    private SysRoleService sysRoleService ;
+    private SysRoleService sysRoleService;
 
     @Operation(summary = "分页")
-    @PostMapping("/findByPage/{pageNum}/{pageSize}")
-    public Result<PageInfo<SysRole>> findByPage(@RequestBody SysRoleDto sysRoleDto ,
-                                                @PathVariable(value = "pageNum") Integer pageNum ,
-                                                @PathVariable(value = "pageSize") Integer pageSize) {
-        PageInfo<SysRole> pageInfo = sysRoleService.findByPage(sysRoleDto , pageNum , pageSize) ;
-        return Result.build(pageInfo , ResultCodeEnum.SUCCESS) ;
+    @PostMapping("/findPage/{pageNum}/{pageSize}")
+    public Result<PageInfo<SysRole>> findPage(@RequestBody SysRoleDto sysRoleDto,
+                                              @PathVariable(value = "pageNum") Integer pageNum,
+                                              @PathVariable(value = "pageSize") Integer pageSize) {
+        PageInfo<SysRole> pageInfo = sysRoleService.findByPage(sysRoleDto, pageNum, pageSize);
+        return Result.build(pageInfo, ResultCodeEnum.SUCCESS);
     }
+
+    @Operation(summary = "保存")
+    @PostMapping("/save")
+    public Result Save(@RequestBody SysRole sysRole) {
+        sysRoleService.save(sysRole);
+        return Result.build(null, ResultCodeEnum.SUCCESS);
+    }
+
 
 }

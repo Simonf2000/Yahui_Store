@@ -25,4 +25,8 @@
         order by id desc
     </select>
 
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+    insert into sys_role(role_name, role_code, description) values(#{roleName},#{roleCode},#{description})
+    </insert>
+
 </mapper>

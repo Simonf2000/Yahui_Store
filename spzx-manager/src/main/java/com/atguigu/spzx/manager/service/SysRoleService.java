@@ -13,4 +13,6 @@ import com.github.pagehelper.PageInfo;
  */
 public interface SysRoleService {
     PageInfo<SysRole> findByPage(SysRoleDto sysRoleDto, Integer pageNum, Integer pageSize);
+
+    void save(SysRole sysRole);
 }
