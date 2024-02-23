@@ -8,13 +8,13 @@
 
     <resultMap id="SysRoleResultMap" type="com.atguigu.spzx.model.entity.system.SysRole" autoMapping="true"></resultMap>
 
-    <sql id="colums">
+    <sql id="columns">
         id, role_name, role_code, description, create_time, update_time, is_deleted
     </sql>
 
     <select id="findByPage" resultMap="SysRoleResultMap">
         select
-        <include refid="colums"></include>
+        <include refid="columns"></include>
         from sys_role
         <where>
             <if test="roleName!=null and roleName!=''">
@@ -26,7 +26,19 @@
     </select>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
-    insert into sys_role(role_name, role_code, description) values(#{roleName},#{roleCode},#{description})
+        insert into sys_role(role_name, role_code, description) values(#{roleName},#{roleCode},#{description})
     </insert>
 
+    <!--    SysRole getById(Long id);-->
+    <select id="getById" resultMap="SysRoleResultMap">
+        select
+        <include refid="columns"></include>
+        from sys_role
+        where id = #{id}
+    </select>
+
+<!--    void update(SysRole sysRole);-->
+    <update id="update">
+        update sys_role set role_name = #{roleName}, role_code = #{roleCode},description=#{description} where id = #{id}
+    </update>
 </mapper>

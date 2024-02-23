@@ -38,4 +38,14 @@ public class SysRoleServiceImpl implements SysRoleService {
     public void save(SysRole sysRole) {
         sysRoleMapper.insert(sysRole);
     }
+
+    @Override
+    public SysRole getById(Long id) {
+         return sysRoleMapper.getById(id);
+    }
+
+    @Override
+    public void udpate(SysRole sysRole) {
+        sysRoleMapper.update(sysRole);
+    }
 }

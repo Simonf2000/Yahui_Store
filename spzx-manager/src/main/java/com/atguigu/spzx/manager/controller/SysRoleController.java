@@ -42,5 +42,19 @@ public class SysRoleController {
         return Result.build(null, ResultCodeEnum.SUCCESS);
     }
 
+    @Operation(summary = "根据ID查询角色")
+    @GetMapping("/getById/{id}")
+    public Result getById(@PathVariable("id") Long id) {
+        SysRole sysRole = sysRoleService.getById(id);
+        return Result.build(sysRole, ResultCodeEnum.SUCCESS);
+    }
+
+    @Operation(summary = "修改")
+    @PutMapping("/update")
+    public Result update(@RequestBody SysRole sysRole) {
+        sysRoleService.udpate(sysRole);
+        return Result.build(sysRole, ResultCodeEnum.SUCCESS);
+    }
+
 
 }

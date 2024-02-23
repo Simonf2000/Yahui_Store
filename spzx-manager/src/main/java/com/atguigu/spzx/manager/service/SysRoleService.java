@@ -15,4 +15,8 @@ public interface SysRoleService {
     PageInfo<SysRole> findByPage(SysRoleDto sysRoleDto, Integer pageNum, Integer pageSize);
 
     void save(SysRole sysRole);
+
+    SysRole getById(Long id);
+
+    void udpate(SysRole sysRole);
 }

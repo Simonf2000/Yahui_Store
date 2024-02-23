@@ -18,4 +18,8 @@ public interface SysRoleMapper {
     List<SysRole> findByPage(SysRoleDto sysRoleDto);
 
     void insert(SysRole sysRole);
+
+    SysRole getById(Long id);
+
+    void update(SysRole sysRole);
 }
