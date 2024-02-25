@@ -5,10 +5,12 @@ import com.alibaba.fastjson.JSON;
 import com.atguigu.spzx.common.exception.GuiguException;
 import com.atguigu.spzx.common.util.AuthContextUtil;
 import com.atguigu.spzx.manager.constant.CacheConstant;
+import com.atguigu.spzx.manager.mapper.SysRoleMapper;
 import com.atguigu.spzx.manager.mapper.SysUserMapper;
 import com.atguigu.spzx.manager.service.SysUserService;
 import com.atguigu.spzx.model.dto.system.LoginDto;
 import com.atguigu.spzx.model.dto.system.SysUserDto;
+import com.atguigu.spzx.model.entity.system.SysRole;
 import com.atguigu.spzx.model.entity.system.SysUser;
 import com.atguigu.spzx.model.vo.common.ResultCodeEnum;
 import com.atguigu.spzx.model.vo.system.LoginVo;
@@ -21,7 +23,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
 import org.springframework.util.StringUtils;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -38,6 +42,9 @@ public class SysUserServiceImpl implements SysUserService {
 
     @Autowired
     private SysUserMapper sysUserMapper;
+
+    @Autowired
+    private SysRoleMapper sysRoleMapper;
 
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
@@ -134,5 +141,18 @@ public class SysUserServiceImpl implements SysUserService {
     @Override
     public void deleteById(Long id) {
         sysUserMapper.deleteById(id);
+    }
+
+    @Override
+    public Map<String, Object> findRoleByUserId(Long id) {
+        List<SysRole> allRoles = sysRoleMapper.selectAll();
+
+        List<Long> userRoleIds =sysRoleMapper.selectRoleIdsByUserId(id);
+
+        Map<String,Object> data = new HashMap<>();
+        data.put("allRoles",allRoles);
+        data.put("userRoleIds",userRoleIds);
+
+        return data;
     }
 }

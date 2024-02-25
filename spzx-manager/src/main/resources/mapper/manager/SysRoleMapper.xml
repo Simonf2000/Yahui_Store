@@ -46,4 +46,15 @@
     <delete id="deleteById">
         update sys_role set is_deleted = 1 where id = #{id}
     </delete>
+
+<!--    List<SysRole> selectAll();-->
+    <select id="selectAll" resultMap="SysRoleResultMap">
+        select <include refid="columns"></include>
+            from sys_role where is_deleted = 0
+    </select>
+
+<!--    List<Long> selectRoleIdsByUserId(Long id);-->
+<select id="selectRoleIdsByUserId" resultType="java.lang.Long">
+    select role_id from sys_user_role where user_id=#{id}
+</select>
 </mapper>

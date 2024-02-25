@@ -6,6 +6,8 @@ import com.atguigu.spzx.model.entity.system.SysUser;
 import com.atguigu.spzx.model.vo.system.LoginVo;
 import com.github.pagehelper.PageInfo;
 
+import java.util.Map;
+
 /**
  * Created with IntelliJ IDEA.
  *
@@ -29,4 +31,6 @@ public interface SysUserService {
     void udpate(SysUser sysUser);
 
     void deleteById(Long id);
+
+    Map<String, Object> findRoleByUserId(Long id);
 }

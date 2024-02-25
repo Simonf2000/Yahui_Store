@@ -24,4 +24,8 @@ public interface SysRoleMapper {
     void update(SysRole sysRole);
 
     void deleteById(Long id);
+
+    List<SysRole> selectAll();
+
+    List<Long> selectRoleIdsByUserId(Long id);
 }

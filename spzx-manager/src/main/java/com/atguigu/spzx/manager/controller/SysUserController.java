@@ -12,6 +12,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 /**
  * Created with IntelliJ IDEA.
  *
@@ -64,6 +66,12 @@ public class SysUserController {
         return Result.build(null, ResultCodeEnum.SUCCESS);
     }
 
+    @Operation(summary = "根据用户id查询用户角色")
+    @GetMapping("/findRoleByUserId/{id}")
+    public Result<Map<String,Object>> findRoleByUserId(@PathVariable("id") Long id) {
+        Map<String,Object> data = sysUserService.findRoleByUserId(id);
+        return Result.build(data, ResultCodeEnum.SUCCESS);
+    }
 
 
 }
