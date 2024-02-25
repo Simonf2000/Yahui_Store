@@ -27,4 +27,8 @@ public interface SysUserMapper {
     void update(SysUser sysUser);
 
     void deleteById(Long id);
+
+    void deleteUserRoleRelationship(Long userId);
+
+    void insertUserRoleRelationship(@Param("roleId") Long roleId, @Param("userId") Long userId);
 }

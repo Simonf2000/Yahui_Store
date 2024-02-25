@@ -91,4 +91,15 @@ order by id desc
     <delete id="deleteById">
         update sys_user set is_deleted = 1 where id = #{id}
     </delete>
+
+<!--    void deleteUserRoleRelationship(Long userId);-->
+    <delete id="deleteUserRoleRelationship">
+        delete from sys_user_role where user_id = #{userId}
+    </delete>
+
+
+    <!--    void insertUserRoleRelationship(@Param("roleId") Long roleId, @Param("userId") Long userId);-->
+    <insert id="insertUserRoleRelationship">
+       INSERT INTO sys_user_role(role_id,user_id) values(#{roleId},#{userId})
+    </insert>
 </mapper>

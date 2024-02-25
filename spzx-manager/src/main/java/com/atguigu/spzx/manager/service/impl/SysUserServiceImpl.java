@@ -8,6 +8,7 @@ import com.atguigu.spzx.manager.constant.CacheConstant;
 import com.atguigu.spzx.manager.mapper.SysRoleMapper;
 import com.atguigu.spzx.manager.mapper.SysUserMapper;
 import com.atguigu.spzx.manager.service.SysUserService;
+import com.atguigu.spzx.model.dto.system.AssginRoleDto;
 import com.atguigu.spzx.model.dto.system.LoginDto;
 import com.atguigu.spzx.model.dto.system.SysUserDto;
 import com.atguigu.spzx.model.entity.system.SysRole;
@@ -20,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.DigestUtils;
 import org.springframework.util.StringUtils;
 
@@ -147,12 +149,27 @@ public class SysUserServiceImpl implements SysUserService {
     public Map<String, Object> findRoleByUserId(Long id) {
         List<SysRole> allRoles = sysRoleMapper.selectAll();
 
-        List<Long> userRoleIds =sysRoleMapper.selectRoleIdsByUserId(id);
+        List<Long> userRoleIds = sysRoleMapper.selectRoleIdsByUserId(id);
 
-        Map<String,Object> data = new HashMap<>();
-        data.put("allRoles",allRoles);
-        data.put("userRoleIds",userRoleIds);
+        Map<String, Object> data = new HashMap<>();
+        data.put("allRoles", allRoles);
+        data.put("userRoleIds", userRoleIds);
 
         return data;
+    }
+
+    @Override
+    public void doAssign(AssginRoleDto assginRoleDto) {
+        Long userId = assginRoleDto.getUserId();
+
+        sysUserMapper.deleteUserRoleRelationship(userId);
+
+        List<Long> roleList = assginRoleDto.getRoleIdList();
+        if (!CollectionUtils.isEmpty(roleList)) {
+            for (Long roleId : roleList
+            ) {
+                sysUserMapper.insertUserRoleRelationship(roleId, userId);
+            }
+        }
     }
 }
