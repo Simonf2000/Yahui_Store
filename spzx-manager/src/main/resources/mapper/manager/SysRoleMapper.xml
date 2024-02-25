@@ -41,4 +41,9 @@
     <update id="update">
         update sys_role set role_name = #{roleName}, role_code = #{roleCode},description=#{description} where id = #{id}
     </update>
+
+<!--    void deleteById(Long id);-->
+    <delete id="deleteById">
+        update sys_role set is_deleted = 1 where id = #{id}
+    </delete>
 </mapper>

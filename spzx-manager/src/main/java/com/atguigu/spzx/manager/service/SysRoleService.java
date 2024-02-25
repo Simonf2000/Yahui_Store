@@ -19,4 +19,6 @@ public interface SysRoleService {
     SysRole getById(Long id);
 
     void udpate(SysRole sysRole);
+
+    void deleteById(Long id);
 }

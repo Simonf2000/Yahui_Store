@@ -56,5 +56,13 @@ public class SysRoleController {
         return Result.build(sysRole, ResultCodeEnum.SUCCESS);
     }
 
+    @Operation(summary = "根据id删除角色")
+    @DeleteMapping("/deleteById/{id}")
+    public Result deleteById(@PathVariable("id") Long id) {
+        sysRoleService.deleteById(id);
+        return Result.build(null, ResultCodeEnum.SUCCESS);
+    }
+
+
 
 }
