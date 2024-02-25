@@ -8,9 +8,12 @@ import com.atguigu.spzx.manager.constant.CacheConstant;
 import com.atguigu.spzx.manager.mapper.SysUserMapper;
 import com.atguigu.spzx.manager.service.SysUserService;
 import com.atguigu.spzx.model.dto.system.LoginDto;
+import com.atguigu.spzx.model.dto.system.SysUserDto;
 import com.atguigu.spzx.model.entity.system.SysUser;
 import com.atguigu.spzx.model.vo.common.ResultCodeEnum;
 import com.atguigu.spzx.model.vo.system.LoginVo;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -18,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
 import org.springframework.util.StringUtils;
 
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -67,9 +71,9 @@ public class SysUserServiceImpl implements SysUserService {
             throw new GuiguException(ResultCodeEnum.LOGIN_ERROR);
         }
 
-        // 生成令牌，保存数据到Redis中
+        // 生成令牌，保存数据到Redis中 TODO 临时有效时间
         String token = UUID.randomUUID().toString().replace("-", "");
-        redisTemplate.opsForValue().set(CacheConstant.USER_LOGIN_PREFIX + token, JSON.toJSONString(sysUser), 30, TimeUnit.MINUTES);
+        redisTemplate.opsForValue().set(CacheConstant.USER_LOGIN_PREFIX + token, JSON.toJSONString(sysUser), 3000, TimeUnit.MINUTES);
 
         // 构建响应结果对象
         LoginVo loginVo = new LoginVo();
@@ -99,5 +103,34 @@ public class SysUserServiceImpl implements SysUserService {
     @Override
     public void logout(String token) {
         redisTemplate.delete(CacheConstant.USER_LOGIN_PREFIX + token);
+    }
+
+    @Override
+    public PageInfo<SysUser> findPage(SysUserDto sysUserDto, Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+
+        List<SysUser> list = sysUserMapper.findPage(sysUserDto);
+
+        return new PageInfo<SysUser>(list);
+    }
+
+    @Override
+    public void save(SysUser sysUser) {
+        sysUserMapper.insert(sysUser);
+    }
+
+    @Override
+    public SysUser getById(Long id) {
+        return sysUserMapper.getById(id);
+    }
+
+    @Override
+    public void udpate(SysUser sysUser) {
+        sysUserMapper.update(sysUser);
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        sysUserMapper.deleteById(id);
     }
 }

@@ -78,7 +78,8 @@ public class LoginAuthInterceptor implements HandlerInterceptor {
         /**
          * @Description: 刷新登录有效时间
          */
-        redisTemplate.expire(CacheConstant.USER_LOGIN_PREFIX + token, 30, TimeUnit.MINUTES);
+        // TODO 临时有效期
+        redisTemplate.expire(CacheConstant.USER_LOGIN_PREFIX + token, 3000, TimeUnit.MINUTES);
 
         //放行
         return true;

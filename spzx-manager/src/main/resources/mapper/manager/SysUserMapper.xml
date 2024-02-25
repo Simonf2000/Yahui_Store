@@ -8,7 +8,7 @@
 
     </resultMap>
 
-    <sql id="colums">
+    <sql id="columns">
         id,
         username,
         password,
@@ -24,9 +24,71 @@
 
     <select id="selectByUserName" resultMap="SysUserResultMap">
         select
-        <include refid="colums"></include>
+        <include refid="columns"></include>
         from sys_user
         where username = #{userName} and is_deleted = 0
     </select>
 
+    <!--    List<SysUser> findPage(SysUserDto sysUserDto);-->
+
+    <select id="findPage" resultMap="SysUserResultMap">
+        select
+        <include refid="columns"></include>
+        from sys_user
+<where>
+    <if test="dto.keyword!=null and dto.keyword!=''">
+        and (username like concat('%',#{dto.keyword},'%') or name like concat('%',#{dto.keyword},'%') or phone like concat('%',#{dto.keyword},'%'))
+    </if>
+    <if test="dto.createTimeBegin!=null and dto.createTimeBegin!=''">
+        and create_time >= #{dto.createTimeBegin}
+    </if>
+    <if test="dto.createTimeEnd!=null and dto.createTimeEnd!=''">
+        and create_time &lt;= #{dto.createTimeEnd}
+    </if>
+    and is_deleted = 0
+</where>
+order by id desc
+    </select>
+
+<!--    void insert(SysUser sysUser);-->
+
+<!--    SysUser getById(Long id);-->
+
+<!--    void update(SysUser sysUser);-->
+
+<!--    void deleteById(Long id);-->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_user(
+        username,
+        password,
+        name,
+        phone,
+        avatar,
+        description,
+        status) values(#{userName},#{password},#{name},#{phone},#{avatar},#{description},#{status})
+    </insert>
+
+    <select id="getById" resultMap="SysUserResultMap">
+        select
+        <include refid="columns"></include>
+        from sys_user
+        where id = #{id}
+    </select>
+
+    <update id="update">
+        update sys_user set
+        username=#{userName},
+        password=#{password},
+        name=#{name},
+        phone=#{phone},
+        avatar=#{avatar},
+        description=#{description},
+        status=#{status}
+        where id = #{id}
+    </update>
+
+    <!--    void deleteById(Long id);-->
+    <delete id="deleteById">
+        update sys_user set is_deleted = 1 where id = #{id}
+    </delete>
 </mapper>
