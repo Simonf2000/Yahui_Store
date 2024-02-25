@@ -116,6 +116,8 @@ public class SysUserServiceImpl implements SysUserService {
 
     @Override
     public void save(SysUser sysUser) {
+        sysUser.setStatus(1);
+        sysUser.setPassword(DigestUtils.md5DigestAsHex(sysUser.getPassword().getBytes()));
         sysUserMapper.insert(sysUser);
     }
 
