@@ -2,6 +2,10 @@ package com.atguigu.spzx.manager.lisener;
 
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
+import com.alibaba.excel.util.ListUtils;
+import com.atguigu.spzx.manager.mapper.CategoryMapper;
+import com.atguigu.spzx.model.entity.product.Category;
+import com.atguigu.spzx.model.vo.product.CategoryExcelVo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,20 +19,33 @@ import java.util.List;
  */
 public class ExcelListener<T> extends AnalysisEventListener<T> {
 
-    List<T> datas = new ArrayList<>();
+    private static final int BATCH_COUNT = 100;
+
+    CategoryMapper categoryMapper;
+
+    List<CategoryExcelVo> categoryExcelVoList = ListUtils.newArrayListWithExpectedSize(BATCH_COUNT);
+
+    public  ExcelListener(CategoryMapper categoryMapper){
+        this.categoryMapper = categoryMapper;
+    }
 
     @Override
     public void invoke(T data, AnalysisContext analysisContext) {
-        System.out.println("ExcelListener - invoke执行了");
-        datas.add(data);
+        categoryExcelVoList.add((CategoryExcelVo)data);
+        if (categoryExcelVoList.size() >= BATCH_COUNT) {
+            saveData();
+            categoryExcelVoList = ListUtils.newArrayListWithExpectedSize(BATCH_COUNT);
+        }
     }
 
     @Override
     public void doAfterAllAnalysed(AnalysisContext analysisContext) {
-        System.out.println("ExcelListener - doAfterAllAnalysed执行了");
+        if (categoryExcelVoList.size() >= 0) {
+            saveData();
+        }
     }
 
-    public List<T> getDatas() {
-        return datas;
+    public void saveData(){
+        categoryMapper.saveBatch(categoryExcelVoList);
     }
 }

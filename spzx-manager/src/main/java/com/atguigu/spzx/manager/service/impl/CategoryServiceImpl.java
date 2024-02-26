@@ -1,6 +1,7 @@
 package com.atguigu.spzx.manager.service.impl;
 
 import com.alibaba.excel.EasyExcel;
+import com.atguigu.spzx.manager.lisener.ExcelListener;
 import com.atguigu.spzx.manager.mapper.CategoryMapper;
 import com.atguigu.spzx.manager.service.CategoryService;
 import com.atguigu.spzx.model.entity.product.Category;
@@ -10,7 +11,9 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -61,6 +64,16 @@ public class CategoryServiceImpl implements CategoryService {
 
         } catch (Exception e) {
            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void importData(MultipartFile file) {
+        try {
+            ExcelListener<CategoryExcelVo> excelListener = new ExcelListener<>(categoryMapper);
+            EasyExcel.read(file.getInputStream(),CategoryExcelVo.class,excelListener).sheet().doRead();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

@@ -20,14 +20,14 @@ public class EasyExcelTest {
         writeDataToExcel();
     }
 
-    private static void readExcel() {
-        String filename = "E:/分类数据.xlsx";
-        ExcelListener<CategoryExcelVo> excelVoExcelListener = new ExcelListener<>();
-        EasyExcel.read(filename, CategoryExcelVo.class, excelVoExcelListener).sheet().doRead();
-
-        List<CategoryExcelVo> categoryExcelVoList = excelVoExcelListener.getDatas();
-        categoryExcelVoList.forEach(categoryExcelVo -> System.out.println("categoryExcelVo = " + categoryExcelVo));
-    }
+//    private static void readExcel() {
+//        String filename = "E:/分类数据.xlsx";
+//        ExcelListener<CategoryExcelVo> excelVoExcelListener = new ExcelListener<>();
+//        EasyExcel.read(filename, CategoryExcelVo.class, excelVoExcelListener).sheet().doRead();
+//
+//        List<CategoryExcelVo> categoryExcelVoList = excelVoExcelListener.getDatas();
+//        categoryExcelVoList.forEach(categoryExcelVo -> System.out.println("categoryExcelVo = " + categoryExcelVo));
+//    }
 
     public static void writeDataToExcel() {
         List<CategoryExcelVo> list = new ArrayList<>() ;

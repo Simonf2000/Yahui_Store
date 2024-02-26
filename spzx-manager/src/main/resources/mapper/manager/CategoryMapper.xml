@@ -32,4 +32,11 @@
         order by order_num asc
     </select>
 
+    <insert id="saveBatch">
+        insert into category(id, name, image_url, parent_id, status, order_num) values
+        <foreach collection="categoryExcelVoList" item="vo" separator=",">
+            (#{vo.id},#{vo.name},#{vo.imageUrl},#{vo.parentId},#{vo.status},#{vo.orderNum})
+        </foreach>
+    </insert>
+
 </mapper>
