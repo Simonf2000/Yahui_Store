@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -58,22 +59,34 @@ public class SysMenuServiceImpl implements SysMenuService {
     @Override
     public List<SysMenuVo> findUserMenuList() {
         //1.从线程上获取用户信息
-
+        SysUser sysUser = AuthContextUtil.get();
+        Long UserId = sysUser.getId();
         //2.根据用户id查询他所拥有的菜单权限    user -> role -> menu  关联查询获取数据
-
+        List<SysMenu> sysMenuList = sysMenuMapper.findUserMenuList(UserId);
         //3.数据类型转换
-
         // 3.2 将菜单列表转换为父子关系数据 List<SysMenu>(放父和子)=>>  List<SysMenu> (只放父)
+        List<SysMenu> sysMenuParent = MenuHelper.buildTree(sysMenuList);
 
         // 3.2 List<SysMenu>  =>>  List<SysMenuVo>
-
+        List<SysMenuVo> sysMenuVoList = buildMenus(sysMenuParent);
         //返回数据结果
-        return null;
+        return sysMenuVoList;
     }
 
     // 将List<SysMenu>对象转换成List<SysMenuVo>对象
     private List<SysMenuVo> buildMenus(List<SysMenu> menus) {
+        List<SysMenuVo> sysMenuVoList = new ArrayList<>();
+        for (SysMenu menu : menus) {
+            SysMenuVo sysMenuVo = new SysMenuVo();
+            sysMenuVo.setTitle(menu.getTitle());
+            sysMenuVo.setName(menu.getComponent());
 
-        return null;
+            List<SysMenu> children = menu.getChildren();
+            if (!CollectionUtils.isEmpty(children)) {
+                sysMenuVo.setChildren(buildMenus(children));
+            }
+            sysMenuVoList.add(sysMenuVo);
+        }
+        return sysMenuVoList;
     }
 }
