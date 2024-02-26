@@ -45,6 +45,7 @@ public class SysMenuServiceImpl implements SysMenuService {
 
     @Override
     public void removeById(Long id) {
+
         //删除菜单时，如果菜单是父菜单，有子菜单情况下，不允许删除。没有子菜单的菜单可以删除。
         int count = sysMenuMapper.countByParentId(id);
         //根据外键值，进行count统计。如果值大于0，说明这个菜单有孩子，不能删除
