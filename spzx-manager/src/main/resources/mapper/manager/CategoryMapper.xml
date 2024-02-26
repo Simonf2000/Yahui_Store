@@ -24,4 +24,12 @@
           and is_deleted = 0
     </select>
 
+    <select id="selectAll" resultType="com.atguigu.spzx.model.entity.product.Category">
+        select
+        <include refid="columns"></include>
+        from category
+        where is_deleted = 0
+        order by order_num asc
+    </select>
+
 </mapper>

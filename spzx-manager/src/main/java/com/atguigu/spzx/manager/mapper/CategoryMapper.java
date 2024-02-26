@@ -10,4 +10,6 @@ public interface CategoryMapper {
     List<Category> findCategoryByParentId(Long id);
 
     int countCategoryByParentId(Long id);
+
+    List<Category> selectAll();
 }
