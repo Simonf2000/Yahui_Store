@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.spzx.manager.mapper.SysRoleMenuMapper">
+
+
+    <select id="findMenuIdsByRoleId" resultType="long">
+        select menu_id from sys_role_menu where role_id=#{id} and is_half = 0
+    </select>
+
+    <delete id="deleteRoleMenuRelationship">
+        delete from sys_role_menu where role_id = #{roleId}
+    </delete>
+
+    <insert id="insert">
+        insert into sys_role_menu(role_id,menu_id,is_half) values(#{roleId},#{menuId},#{isHalf})
+    </insert>
+
+</mapper>
