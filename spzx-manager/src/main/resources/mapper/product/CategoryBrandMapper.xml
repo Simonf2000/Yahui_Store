@@ -59,7 +59,7 @@
         </if>
         update_time = now()
         where
-        id = #{id}
+        id = #{id} and is_deleted = 0
     </update>
 
     <update id="deleteById">
