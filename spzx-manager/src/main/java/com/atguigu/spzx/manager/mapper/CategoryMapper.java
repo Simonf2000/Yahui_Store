@@ -15,4 +15,5 @@ public interface CategoryMapper {
     List<Category> selectAll();
 
     <T> void saveBatch(List<CategoryExcelVo> categoryExcelVoList);
+
 }

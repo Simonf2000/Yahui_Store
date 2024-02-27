@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.spzx.manager.mapper.CategoryBrandMapper">
+
+    <resultMap id="categoryBrandResultMap" type="com.atguigu.spzx.model.entity.product.CategoryBrand"
+               autoMapping="true"></resultMap>
+
+    <sql id="columns">
+        id, brand_id, category_id, create_time, update_time, is_deleted
+    </sql>
+
+
+    <select id="findByPage" resultMap="categoryBrandResultMap">
+        select
+        cb.id,cb.brand_id brandId,cb.category_id categoryId,cb.create_time createTime,
+        c.name categoryName,
+        b.name brandName,
+        b.logo
+        from category_brand cb
+        inner join category c on cb.category_id = c.id
+        inner join brand b on cb.brand_id = b.id
+        <where>
+            <if test="categoryId!=null">
+                and cb.category_id = #{categoryId}
+            </if>
+            <if test="brandId!=null">
+                and cb.brand_id = #{brandId}
+            </if>
+            and cb.is_deleted = 0
+        </where>
+        order by cb.id desc
+    </select>
+
+
+    <insert id="save">
+        insert into category_brand (id,
+                                    brand_id,
+                                    category_id,
+                                    create_time,
+                                    update_time,
+                                    is_deleted)
+        values (#{id},
+                #{brandId},
+                #{categoryId},
+                now(),
+                now(),
+                0)
+    </insert>
+
+    <update id="updateById">
+        update category_brand set
+        <if test="brandId != null and brandId != ''">
+            brand_id = #{brandId},
+        </if>
+        <if test="categoryId != null and categoryId != ''">
+            category_id = #{categoryId},
+        </if>
+        update_time = now()
+        where
+        id = #{id}
+    </update>
+
+    <update id="deleteById">
+        update category_brand
+        set update_time = now(),
+            is_deleted  = 1
+        where id = #{id}
+    </update>
+</mapper>
