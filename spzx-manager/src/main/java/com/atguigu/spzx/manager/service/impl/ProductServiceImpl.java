@@ -63,4 +63,31 @@ public class ProductServiceImpl implements ProductService {
         productDetails.setProductId(productId);
         productDetailsMapper.insert(productDetails);
     }
+
+    @Override
+    public Product getById(Long id) {
+        Product product = productMapper.getById(id);
+
+        List<ProductSku> productSkuList = productSkuMapper.selectByProductId(id);
+        product.setProductSkuList(productSkuList);
+
+        ProductDetails productDetails = productDetailsMapper.selectByProductId(id);
+        product.setDetailsImageUrls(productDetails.getImageUrls());
+        return product;
+    }
+
+    @Override
+    public void updateById(Product product) {
+        productMapper.updateById(product);
+
+        List<ProductSku> productSkuList = product.getProductSkuList();
+        for (ProductSku productSku :
+                productSkuList) {
+            productSkuMapper.updateById(productSku);
+        }
+
+        ProductDetails productDetails = productDetailsMapper.selectByProductId(product.getId());
+        productDetails.setImageUrls(product.getDetailsImageUrls());
+        productDetailsMapper.updateById(productDetails);
+    }
 }

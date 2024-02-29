@@ -16,4 +16,34 @@
         )
     </insert>
 
+    <!--    ProductDetails selectByProductId(Long id);-->
+    <resultMap id="productDetailsMap" type="com.atguigu.spzx.model.entity.product.ProductDetails"
+               autoMapping="true"></resultMap>
+
+    <!-- 用于select查询公用抽取的列 -->
+    <sql id="columns">
+        id,product_id,image_urls,create_time,update_time,is_deleted
+    </sql>
+
+    <select id="selectByProductId" resultMap="productDetailsMap">
+        select
+        <include refid="columns"/>
+        from product_details
+        where
+        product_id = #{productId} and is_deleted = 0
+    </select>
+
+    <!--    void updateById(ProductDetails productDetails);-->
+    <update id="updateById">
+        update product_details set
+        <if test="productId != null">
+            product_id = #{productId},
+        </if>
+        <if test="imageUrls != null and imageUrls != ''">
+            image_urls = #{imageUrls},
+        </if>
+        update_time = now()
+        where
+        id = #{id}
+    </update>
 </mapper>

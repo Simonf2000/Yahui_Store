@@ -8,4 +8,8 @@ public interface ProductService {
     PageInfo<Product> findByPage(Integer page, Integer limit, ProductDto productDto);
 
     void save(Product product);
+
+    Product getById(Long id);
+
+    void updateById(Product product);
 }

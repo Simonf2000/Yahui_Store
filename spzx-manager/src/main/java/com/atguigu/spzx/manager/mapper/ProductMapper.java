@@ -10,4 +10,8 @@ public interface ProductMapper {
     List<Product> findByPage(ProductDto productDto);
 
     void insert(Product product);
+
+    Product getById(Long id);
+
+    void updateById(Product product);
 }

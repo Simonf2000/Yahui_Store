@@ -3,6 +3,8 @@ package com.atguigu.spzx.manager.mapper;
 import com.atguigu.spzx.model.entity.product.ProductSku;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 /**
  * Created with IntelliJ IDEA.
  *
@@ -13,4 +15,8 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface ProductSkuMapper {
     void insert(ProductSku productSku);
+
+    List<ProductSku> selectByProductId(Long id);
+
+    void updateById(ProductSku productSku);
 }
