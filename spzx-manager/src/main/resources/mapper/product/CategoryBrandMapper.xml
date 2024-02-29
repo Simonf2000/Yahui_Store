@@ -68,4 +68,16 @@
             is_deleted  = 1
         where id = #{id}
     </update>
+
+    <!--    List<Brand> findBrandByCategoryId(Long categoryId);-->
+    <select id="findBrandByCategoryId" resultType="com.atguigu.spzx.model.entity.product.Brand">
+        select b.*
+        from category_brand cb
+                 inner join brand b on cb.brand_id = b.id
+        where cb.category_id = #{categoryId}
+          and cb.is_deleted = 0
+          and b.is_deleted = 0
+        order by b.id asc;
+    </select>
+
 </mapper>
