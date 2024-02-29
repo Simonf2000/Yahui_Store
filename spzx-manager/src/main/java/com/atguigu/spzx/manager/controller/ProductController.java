@@ -59,4 +59,11 @@ public class ProductController {
         return Result.build(null , ResultCodeEnum.SUCCESS) ;
     }
 
+    @Operation(summary = "上下架")
+    @GetMapping("/updateStatus/{id}/{status}")
+    public Result updateStatus(@PathVariable Long id, @PathVariable Integer status) {
+        productService.updateStatus(id, status);
+        return Result.build(null , ResultCodeEnum.SUCCESS) ;
+    }
+
 }
