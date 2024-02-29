@@ -129,4 +129,13 @@
         where
         id = #{id}
     </update>
+
+<!--    void deleteById(Long id);-->
+    <update id="deleteById">
+        update product set
+                           update_time = now() ,
+                           is_deleted = 1
+        where
+            id = #{id}
+    </update>
 </mapper>

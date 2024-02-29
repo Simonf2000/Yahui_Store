@@ -46,4 +46,11 @@
         where
         id = #{id}
     </update>
+
+    <!--    void deletedByProductId(Long id);-->
+    <delete id="deletedByProductId">
+        delete from
+        product_details
+        where product_id=#{id} and is_deleted = 0
+    </delete>
 </mapper>

@@ -101,4 +101,11 @@
         where
         id = #{id}
     </update>
+
+    <!--    void deleteByProductId(Long id);-->
+    <delete id="deleteByProductId">
+        delete
+        from product_sku where product_id = #{id}
+        and is_deleted = 0
+    </delete>
 </mapper>

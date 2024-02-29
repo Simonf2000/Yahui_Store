@@ -45,4 +45,10 @@ public class ProductController {
         return Result.build(null , ResultCodeEnum.SUCCESS) ;
     }
 
+    @DeleteMapping("/deleteById/{id}")
+    public Result deleteById(@Parameter(name = "id", description = "商品id", required = true) @PathVariable Long id) {
+        productService.deleteById(id);
+        return Result.build(null , ResultCodeEnum.SUCCESS) ;
+    }
+
 }
