@@ -97,4 +97,20 @@ public class ProductServiceImpl implements ProductService {
         productSkuMapper.deleteByProductId(id);
         productDetailsMapper.deletedByProductId(id);
     }
+
+    @Override
+    public void updateAuditStatus(Long id, Integer auditStatus) {
+        Product product = new Product();
+        product.setId(id);
+
+        if (auditStatus==1) {
+            product.setAuditStatus(1);
+            product.setAuditMessage("审批通过");
+        }else {
+            product.setAuditStatus(-1);
+            product.setAuditMessage("审批拒绝");
+        }
+
+        productMapper.updateById(product);
+    }
 }

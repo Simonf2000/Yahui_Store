@@ -14,4 +14,6 @@ public interface ProductService {
     void updateById(Product product);
 
     void deleteById(Long id);
+
+    void updateAuditStatus(Long id, Integer auditStatus);
 }
