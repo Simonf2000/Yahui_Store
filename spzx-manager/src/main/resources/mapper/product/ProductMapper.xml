@@ -45,4 +45,32 @@
         order by p.id desc
     </select>
 
+    <!--    void insert(Product product);-->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        insert into product (id,
+                             name,
+                             brand_id,
+                             category1_id,
+                             category2_id,
+                             category3_id,
+                             unit_name,
+                             slider_urls,
+                             spec_value,
+                             status,
+                             audit_status,
+                             audit_message)
+        values (#{id},
+                #{name},
+                #{brandId},
+                #{category1Id},
+                #{category2Id},
+                #{category3Id},
+                #{unitName},
+                #{sliderUrls},
+                #{specValue},
+                #{status},
+                #{auditStatus},
+                #{auditMessage})
+    </insert>
+
 </mapper>

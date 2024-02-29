@@ -8,4 +8,6 @@ import java.util.List;
 @Mapper
 public interface ProductMapper {
     List<Product> findByPage(ProductDto productDto);
+
+    void insert(Product product);
 }

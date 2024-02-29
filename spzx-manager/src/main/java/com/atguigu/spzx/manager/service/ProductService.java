@@ -6,4 +6,6 @@ import com.github.pagehelper.PageInfo;
 
 public interface ProductService {
     PageInfo<Product> findByPage(Integer page, Integer limit, ProductDto productDto);
+
+    void save(Product product);
 }
