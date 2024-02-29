@@ -53,4 +53,17 @@
             is_deleted  = 1
         where id = #{id}
     </update>
+
+    <!--    List<ProductSpec> findAll();-->
+    <select id="findAll" resultType="com.atguigu.spzx.model.entity.product.ProductSpec">
+        select id,
+               spec_name,
+               spec_value,
+               create_time,
+               update_time,
+               is_deleted
+        from product_spec
+        where is_deleted = 0
+        order by id asc
+    </select>
 </mapper>

@@ -5,8 +5,11 @@ import com.atguigu.spzx.model.entity.product.ProductSpec;
 import com.atguigu.spzx.model.vo.common.Result;
 import com.atguigu.spzx.model.vo.common.ResultCodeEnum;
 import com.github.pagehelper.PageInfo;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(value="/admin/product/productSpec")
@@ -36,5 +39,12 @@ public class ProductSpecController {
     public Result removeById(@PathVariable Long id) {
         productSpecService.deleteById(id);
         return Result.build(null , ResultCodeEnum.SUCCESS) ;
+    }
+
+    @Operation(summary = "查询所有规格")
+    @GetMapping("/findAll")
+    public Result<PageInfo<ProductSpec>> findAll(){
+        List<ProductSpec> list = productSpecService.findAll();
+        return Result.build(list,ResultCodeEnum.SUCCESS);
     }
 }
