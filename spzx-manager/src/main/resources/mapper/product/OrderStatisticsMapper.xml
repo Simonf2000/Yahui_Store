@@ -10,5 +10,15 @@
         values (#{orderDate},#{totalAmount},#{totalNum})
     </insert>
 
+    <!--    List<OrderStatistics> getOrderStatisticsData(OrderStatisticsDto orderStatisticsDto);-->
+    <select id="getOrderStatisticsData" resultType="com.atguigu.spzx.model.entity.order.OrderStatistics">
+        select order_date,
+               total_amount,
+               total_num
+        from order_statistics os
+        where os.order_date >= #{dto.createTimeBegin}
+          and os.order_date &lt;= #{dto.createTimeEnd}
+        order by os.order_date asc
+    </select>
 
 </mapper>
