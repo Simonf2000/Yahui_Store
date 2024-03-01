@@ -38,7 +38,7 @@ public class FileUploadServiceImpl implements FileUploadService {
             // 创建一个Minio的客户端对象
             MinioClient minioClient = MinioClient.builder()
                     .endpoint(minioProperties.getEndpointUrl())
-                    .credentials(minioProperties.getAccessKey(), minioProperties.getSecreKey())
+                    .credentials(minioProperties.getAccessKey(), minioProperties.getSecretKey())
                     .build();
 
             boolean found = minioClient.bucketExists(BucketExistsArgs.builder().bucket(minioProperties.getBucketName()).build());

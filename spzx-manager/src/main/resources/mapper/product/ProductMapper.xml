@@ -35,7 +35,7 @@
         p.category3_id, p.unit_name,p.slider_urls , p.spec_value , p.status ,
         p.audit_status , p.audit_message , p.create_time ,
         b.name brandName ,
-        c1.name category1Name , c2.name category2Name , c2.name category3Name
+        c1.name category1Name , c2.name category2Name , c3.name category3Name
         from product p
         INNER JOIN brand b on b.id = p.brand_id
         INNER JOIN category c1 on c1.id = p.category1_id
