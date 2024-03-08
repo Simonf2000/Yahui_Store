@@ -25,7 +25,7 @@ import java.util.List;
 @RestController
 @RequestMapping(value="/api/product/category")
 @SuppressWarnings({"unchecked", "rawtypes"})
-@CrossOrigin
+//@CrossOrigin
 public class CategoryController {
 
     @Autowired
