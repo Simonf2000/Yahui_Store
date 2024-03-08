@@ -28,6 +28,7 @@ import java.util.List;
 @RestController
 @RequestMapping(value="/api/product/index")
 @CrossOrigin
+@SuppressWarnings({"unchecked", "rawtypes"})
 public class IndexController {
 
     @Autowired
