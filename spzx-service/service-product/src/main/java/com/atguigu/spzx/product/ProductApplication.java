@@ -1,7 +1,9 @@
 package com.atguigu.spzx.product;
 
+import com.atguigu.spzx.common.config.Knife4jConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Import;
 
 /**
  * Created with IntelliJ IDEA.
@@ -11,6 +13,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @Description:
  */
 @SpringBootApplication
+@Import(value = {
+        Knife4jConfig.class
+})
 public class ProductApplication {
 
     public static void main(String[] args) {
