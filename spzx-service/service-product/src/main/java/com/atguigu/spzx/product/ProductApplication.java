@@ -3,6 +3,7 @@ package com.atguigu.spzx.product;
 import com.atguigu.spzx.common.config.Knife4jConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Import;
 
 /**
@@ -16,6 +17,7 @@ import org.springframework.context.annotation.Import;
 @Import(value = {
         Knife4jConfig.class
 })
+@EnableCaching
 public class ProductApplication {
 
     public static void main(String[] args) {

@@ -7,6 +7,7 @@ import com.atguigu.spzx.product.mapper.CategoryMapper;
 import com.atguigu.spzx.product.service.CategoryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,6 +52,7 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryList ;
     }
 
+    @Cacheable(value = "category" , key = "'all'")
     @Override
     public List<Category> findCategoryTree() {
         //所有分类列表：703条
