@@ -21,5 +21,4 @@ public interface ProductMapper {
 
         Product getById(Long id);
 
-
 }

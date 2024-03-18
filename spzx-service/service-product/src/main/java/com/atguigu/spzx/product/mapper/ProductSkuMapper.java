@@ -15,4 +15,8 @@ import java.util.List;
 @Mapper
 public interface ProductSkuMapper {
     List<ProductSku> findProductSkuBySale();
+
+    ProductSku getById(Long id);
+
+    List<ProductSku> findByProductId(Long productId);
 }
