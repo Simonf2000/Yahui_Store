@@ -1,4 +1,4 @@
-package com.atguigu.spzx.product.constant;
+package com.atguigu.spzx.common.constant;
 
 public class RedisConst {
 

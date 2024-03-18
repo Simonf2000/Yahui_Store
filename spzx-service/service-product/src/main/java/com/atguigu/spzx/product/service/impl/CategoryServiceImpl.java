@@ -2,7 +2,7 @@ package com.atguigu.spzx.product.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.atguigu.spzx.model.entity.product.Category;
-import com.atguigu.spzx.product.constant.RedisConst;
+import com.atguigu.spzx.common.constant.RedisConst;
 import com.atguigu.spzx.product.mapper.CategoryMapper;
 import com.atguigu.spzx.product.service.CategoryService;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;

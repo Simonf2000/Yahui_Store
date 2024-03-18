@@ -23,6 +23,16 @@ import java.time.Duration;
 public class RedisConfig {
 
     @Bean
+    public LettuceConnectionFactory redisConnectionFactory() {
+        LettuceConnectionFactory factory = new LettuceConnectionFactory(); //默认连接localhost:6379
+        factory.setHostName("192.168.6.100");
+        factory.setPort(6379);
+        factory.setDatabase(0);
+        factory.setPassword("root");
+        return factory;
+    }
+
+    @Bean
     public CacheManager cacheManager(LettuceConnectionFactory connectionFactory) {
 
         //定义序列化器

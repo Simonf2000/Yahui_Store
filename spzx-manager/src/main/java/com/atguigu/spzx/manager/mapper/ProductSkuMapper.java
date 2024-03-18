@@ -2,6 +2,7 @@ package com.atguigu.spzx.manager.mapper;
 
 import com.atguigu.spzx.model.entity.product.ProductSku;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -21,4 +22,8 @@ public interface ProductSkuMapper {
     void updateById(ProductSku productSku);
 
     void deleteByProductId(Long id);
+
+    void updateStatusByProductId(@Param("productId") Long id,@Param("status") Integer status);
+
+    List<Long> findSkuIdListByProductId(Long id);
 }

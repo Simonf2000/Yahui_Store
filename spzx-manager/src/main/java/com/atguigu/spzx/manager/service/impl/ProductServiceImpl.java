@@ -1,5 +1,6 @@
 package com.atguigu.spzx.manager.service.impl;
 
+import com.atguigu.spzx.common.constant.RedisConst;
 import com.atguigu.spzx.manager.mapper.ProductDetailsMapper;
 import com.atguigu.spzx.manager.mapper.ProductMapper;
 import com.atguigu.spzx.manager.mapper.ProductSkuMapper;
@@ -10,6 +11,8 @@ import com.atguigu.spzx.model.entity.product.ProductDetails;
 import com.atguigu.spzx.model.entity.product.ProductSku;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.redisson.api.RBloomFilter;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +31,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Autowired
     private ProductMapper productMapper;
+
+    @Autowired
+    RedissonClient redissonClient;
 
     @Override
     public PageInfo<Product> findByPage(Integer page, Integer limit, ProductDto productDto) {
@@ -103,10 +109,10 @@ public class ProductServiceImpl implements ProductService {
         Product product = new Product();
         product.setId(id);
 
-        if (auditStatus==1) {
+        if (auditStatus == 1) {
             product.setAuditStatus(1);
             product.setAuditMessage("审批通过");
-        }else {
+        } else {
             product.setAuditStatus(-1);
             product.setAuditMessage("审批拒绝");
         }
@@ -119,12 +125,23 @@ public class ProductServiceImpl implements ProductService {
         Product product = new Product();
         product.setId(id);
 
-        if (status==1) {
+        if (status == 1) {
             product.setStatus(1);
-        }else {
+        } else {
             product.setStatus(-1);
         }
 
         productMapper.updateById(product);
+
+        //商品上架：修改product和product_sku 这两个表的status=1
+        productSkuMapper.updateStatusByProductId(id, status);
+
+        //根据商品id查询所有skuId集合，将id存储到布隆过滤器中
+        List<Long> skuIdList = productSkuMapper.findSkuIdListByProductId(id);
+
+        for (Long skuId : skuIdList) {
+            RBloomFilter<Object> bloomFilter = redissonClient.getBloomFilter(RedisConst.PRODUCT_BLOOM_FILTER);
+            bloomFilter.add(skuId);
+        }
     }
 }
