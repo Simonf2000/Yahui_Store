@@ -15,6 +15,8 @@ import com.atguigu.spzx.product.service.ProductService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
+import org.redisson.api.RBloomFilter;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -47,6 +49,9 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     RedisTemplate<String, String> redisTemplate;
 
+    @Autowired
+    RedissonClient redissonClient;
+
     @Override
     public PageInfo<ProductSku> findByPage(Integer page, Integer limit, ProductSkuDto productSkuDto) {
         PageHelper.startPage(page, limit);
@@ -56,6 +61,13 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductItemVo item(Long skuId) {
+
+        RBloomFilter<Object> bloomFilter = redissonClient.getBloomFilter(RedisConst.PRODUCT_BLOOM_FILTER);
+        if (!bloomFilter.contains(skuId)) {
+            log.info("布隆过滤器中没有这个数据:skuId=" + skuId);
+            return new ProductItemVo();
+        }
+
         ProductItemVo vo = null;
         String productItemVoJsonStr = redisTemplate.opsForValue().get(RedisConst.SKUKEY_PREFIX + skuId + RedisConst.SKUKEY_SUFFIX);
         if (StringUtils.hasText(productItemVoJsonStr)) {
@@ -64,22 +76,22 @@ public class ProductServiceImpl implements ProductService {
             return vo;
         }
         ProductItemVo productItemVoFromDb = getFromDb(skuId);
-        if(productItemVoFromDb==null){
+        if (productItemVoFromDb == null) {
             productItemVoFromDb = new ProductItemVo();
             redisTemplate.opsForValue()
-                    .set(RedisConst.SKUKEY_PREFIX + skuId + RedisConst.SKUKEY_SUFFIX,JSON.toJSONString(productItemVoFromDb),
+                    .set(RedisConst.SKUKEY_PREFIX + skuId + RedisConst.SKUKEY_SUFFIX, JSON.toJSONString(productItemVoFromDb),
                             RedisConst.SKUKEY_EMPTY_TIMEOUT, TimeUnit.SECONDS); //空值只缓存30秒
-            log.info("商品详情数据来自-mysql,但是为null,存储默认值到Redis:"+productItemVoFromDb);
-        }else{
+            log.info("商品详情数据来自-mysql,但是为null,存储默认值到Redis:" + productItemVoFromDb);
+        } else {
             redisTemplate.opsForValue()
-                    .set(RedisConst.SKUKEY_PREFIX + skuId + RedisConst.SKUKEY_SUFFIX,JSON.toJSONString(productItemVoFromDb),
+                    .set(RedisConst.SKUKEY_PREFIX + skuId + RedisConst.SKUKEY_SUFFIX, JSON.toJSONString(productItemVoFromDb),
                             RedisConst.SKUKEY_TIMEOUT, TimeUnit.SECONDS); //非空值只缓存24*60*60秒
-            log.info("商品详情数据来自-mysql:"+productItemVoFromDb);
+            log.info("商品详情数据来自-mysql:" + productItemVoFromDb);
         }
         return productItemVoFromDb;
     }
 
-   // @NotNull
+    // @NotNull
     private ProductItemVo getFromDb(Long skuId) {
         try {
             ProductItemVo productItemVo = new ProductItemVo();
