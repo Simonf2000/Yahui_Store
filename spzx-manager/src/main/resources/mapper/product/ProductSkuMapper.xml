@@ -114,6 +114,18 @@
     </update>
 
     <select id="findSkuIdListByProductId" resultType="long">
-        select id from product_sku where product_id=#{id} and is_deleted = 0 and status = 1
+        select id
+        from product_sku
+        where product_id = #{id}
+          and is_deleted = 0
+          and status = 1
+    </select>
+
+    <!--    List<Long> findSkuIdAll();-->
+    <select id="findSkuIdAll" resultType="long">
+        select id
+        from product_sku
+        where is_deleted = 0
+          and status = 1
     </select>
 </mapper>

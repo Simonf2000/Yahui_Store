@@ -26,4 +26,6 @@ public interface ProductSkuMapper {
     void updateStatusByProductId(@Param("productId") Long id,@Param("status") Integer status);
 
     List<Long> findSkuIdListByProductId(Long id);
+
+    List<Long> findSkuIdAll();
 }
