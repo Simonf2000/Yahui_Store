@@ -7,15 +7,20 @@ import com.atguigu.spzx.model.entity.product.Product;
 import com.atguigu.spzx.model.entity.product.ProductDetails;
 import com.atguigu.spzx.model.entity.product.ProductSku;
 import com.atguigu.spzx.model.vo.h5.ProductItemVo;
+import com.atguigu.spzx.product.constant.RedisConst;
 import com.atguigu.spzx.product.mapper.ProductDetailsMapper;
 import com.atguigu.spzx.product.mapper.ProductMapper;
 import com.atguigu.spzx.product.mapper.ProductSkuMapper;
 import com.atguigu.spzx.product.service.ProductService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.*;
 
@@ -28,6 +33,7 @@ import java.util.*;
  */
 @Service
 @Transactional
+@Slf4j
 public class ProductServiceImpl implements ProductService {
     @Autowired
     ProductMapper productMapper;
@@ -38,6 +44,9 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     ProductDetailsMapper productDetailsMapper;
 
+    @Autowired
+    RedisTemplate<String, String> redisTemplate;
+
     @Override
     public PageInfo<ProductSku> findByPage(Integer page, Integer limit, ProductSkuDto productSkuDto) {
         PageHelper.startPage(page, limit);
@@ -47,6 +56,23 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductItemVo item(Long skuId) {
+        ProductItemVo vo = null;
+        String productItemVoJsonStr = redisTemplate.opsForValue().get(RedisConst.SKUKEY_PREFIX + skuId + RedisConst.SKUKEY_SUFFIX);
+        if (StringUtils.hasText(productItemVoJsonStr)) {
+            vo = JSON.parseObject(productItemVoJsonStr, ProductItemVo.class);
+            log.info("商品详情数据来自-redis:" + vo);
+            return vo;
+        }
+        ProductItemVo ProductItemVoFromDb = getFromDb(skuId);
+        redisTemplate.opsForValue().
+                set(RedisConst.SKUKEY_PREFIX + skuId +
+                        RedisConst.SKUKEY_SUFFIX, JSON.toJSONString(ProductItemVoFromDb));
+        log.info("商品详情数据来自-mysql:" + ProductItemVoFromDb);
+        return ProductItemVoFromDb;
+    }
+
+    @NotNull
+    private ProductItemVo getFromDb(Long skuId) {
         ProductItemVo productItemVo = new ProductItemVo();
 
         ProductSku productSku = productSkuMapper.getById(skuId);
