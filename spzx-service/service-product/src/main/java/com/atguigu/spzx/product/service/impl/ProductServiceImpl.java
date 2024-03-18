@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created with IntelliJ IDEA.
@@ -63,48 +64,60 @@ public class ProductServiceImpl implements ProductService {
             log.info("商品详情数据来自-redis:" + vo);
             return vo;
         }
-        ProductItemVo ProductItemVoFromDb = getFromDb(skuId);
-        redisTemplate.opsForValue().
-                set(RedisConst.SKUKEY_PREFIX + skuId +
-                        RedisConst.SKUKEY_SUFFIX, JSON.toJSONString(ProductItemVoFromDb));
-        log.info("商品详情数据来自-mysql:" + ProductItemVoFromDb);
-        return ProductItemVoFromDb;
+        ProductItemVo productItemVoFromDb = getFromDb(skuId);
+        if(productItemVoFromDb==null){
+            productItemVoFromDb = new ProductItemVo();
+            redisTemplate.opsForValue()
+                    .set(RedisConst.SKUKEY_PREFIX + skuId + RedisConst.SKUKEY_SUFFIX,JSON.toJSONString(productItemVoFromDb),
+                            RedisConst.SKUKEY_EMPTY_TIMEOUT, TimeUnit.SECONDS); //空值只缓存30秒
+            log.info("商品详情数据来自-mysql,但是为null,存储默认值到Redis:"+productItemVoFromDb);
+        }else{
+            redisTemplate.opsForValue()
+                    .set(RedisConst.SKUKEY_PREFIX + skuId + RedisConst.SKUKEY_SUFFIX,JSON.toJSONString(productItemVoFromDb),
+                            RedisConst.SKUKEY_TIMEOUT, TimeUnit.SECONDS); //非空值只缓存24*60*60秒
+            log.info("商品详情数据来自-mysql:"+productItemVoFromDb);
+        }
+        return productItemVoFromDb;
     }
 
-    @NotNull
+   // @NotNull
     private ProductItemVo getFromDb(Long skuId) {
-        ProductItemVo productItemVo = new ProductItemVo();
+        try {
+            ProductItemVo productItemVo = new ProductItemVo();
 
-        ProductSku productSku = productSkuMapper.getById(skuId);
-        Long productId = productSku.getProductId();
-        Product product = productMapper.getById(productId);
+            ProductSku productSku = productSkuMapper.getById(skuId);
+            Long productId = productSku.getProductId();
+            Product product = productMapper.getById(productId);
 
-        String sliderUrls = product.getSliderUrls();
-        String[] sliderUrlsArray = sliderUrls.split(",");
-        List<String> sliderUrlList = Arrays.asList(sliderUrlsArray);
+            String sliderUrls = product.getSliderUrls();
+            String[] sliderUrlsArray = sliderUrls.split(",");
+            List<String> sliderUrlList = Arrays.asList(sliderUrlsArray);
 
-        ProductDetails productDetails = productDetailsMapper.getByProductId(productId);
-        String imageUrls = productDetails.getImageUrls();
-        String[] imageUrlsArray = imageUrls.split(",");
-        List<String> detailsImageUrlList = Arrays.asList(imageUrlsArray);
+            ProductDetails productDetails = productDetailsMapper.getByProductId(productId);
+            String imageUrls = productDetails.getImageUrls();
+            String[] imageUrlsArray = imageUrls.split(",");
+            List<String> detailsImageUrlList = Arrays.asList(imageUrlsArray);
 
-        String specValue = product.getSpecValue();
-        JSONArray sepcValueList = JSON.parseArray(specValue);
+            String specValue = product.getSpecValue();
+            JSONArray sepcValueList = JSON.parseArray(specValue);
 
-        List<ProductSku> productSkuList = productSkuMapper.findByProductId(productId);
-        Map<String, Object> skuSpecValueMap = new HashMap<>();
-        for (ProductSku sku :
-                productSkuList) {
-            skuSpecValueMap.put(sku.getSkuSpec(), sku.getId());
+            List<ProductSku> productSkuList = productSkuMapper.findByProductId(productId);
+            Map<String, Object> skuSpecValueMap = new HashMap<>();
+            for (ProductSku sku :
+                    productSkuList) {
+                skuSpecValueMap.put(sku.getSkuSpec(), sku.getId());
+            }
+
+            productItemVo.setProductSku(productSku);
+            productItemVo.setProduct(product);
+            productItemVo.setSliderUrlList(sliderUrlList);
+            productItemVo.setDetailsImageUrlList(detailsImageUrlList);
+            productItemVo.setSpecValueList(sepcValueList);
+            productItemVo.setSkuSpecValueMap(skuSpecValueMap);
+
+            return productItemVo;
+        } catch (Exception e) {
+            return null;
         }
-
-        productItemVo.setProductSku(productSku);
-        productItemVo.setProduct(product);
-        productItemVo.setSliderUrlList(sliderUrlList);
-        productItemVo.setDetailsImageUrlList(detailsImageUrlList);
-        productItemVo.setSpecValueList(sepcValueList);
-        productItemVo.setSkuSpecValueMap(skuSpecValueMap);
-
-        return productItemVo;
     }
 }
