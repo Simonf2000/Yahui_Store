@@ -14,4 +14,6 @@ public class RedisConst {
     public static final String PRODUCT_NEW_BLOOM_FILTER = "product:new:bloom:filter";
 
     public static final String CATEGORY_ONE = "category:one";
+
+    public static final String PRODUCT_LOCK_SUFFIX = "product:lock";
 }
