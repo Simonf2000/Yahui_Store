@@ -1,6 +1,7 @@
 package com.atguigu.spzx.product.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.atguigu.spzx.common.anno.GuiGuCache;
 import com.atguigu.spzx.model.entity.product.Category;
 import com.atguigu.spzx.common.constant.RedisConst;
 import com.atguigu.spzx.product.mapper.CategoryMapper;
@@ -35,20 +36,14 @@ public class CategoryServiceImpl implements CategoryService {
     @Autowired
     private RedisTemplate<String , String> redisTemplate ;
 
+    @GuiGuCache(
+            cacheKey = RedisConst.CATEGORY_ONE,
+            enableLock = true ,
+            lockName = RedisConst.CATEGORY_ONE_LOCK
+    )
     @Override
     public List<Category> findOneCategory() {
-        // 从Redis缓存中查询所有的一级分类数据
-        String categoryListJSON = redisTemplate.opsForValue().get(RedisConst.CATEGORY_ONE);
-        if(StringUtils.hasText(categoryListJSON)) {
-            List<Category> categoryList = JSON.parseArray(categoryListJSON, Category.class);
-            log.info("从Redis缓存中查询到了所有的一级分类数据");
-            return categoryList ;
-        }
-
-        List<Category> categoryList = categoryMapper.findOneCategory();
-        log.info("从数据库中查询到了所有的一级分类数据");
-        redisTemplate.opsForValue().set(RedisConst.CATEGORY_ONE , JSON.toJSONString(categoryList) , 7 , TimeUnit.DAYS);
-        return categoryList ;
+        return categoryMapper.findOneCategory();
     }
 
     @Cacheable(value = "category" , key = "'all'")

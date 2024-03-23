@@ -1,5 +1,6 @@
 package com.atguigu.spzx.product;
 
+import com.atguigu.spzx.common.aspect.GuiguCacheAspect;
 import com.atguigu.spzx.common.config.Knife4jConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -15,7 +16,7 @@ import org.springframework.context.annotation.Import;
  */
 @SpringBootApplication
 @Import(value = {
-        Knife4jConfig.class
+        Knife4jConfig.class, GuiguCacheAspect.class
 })
 @EnableCaching
 public class ProductApplication {

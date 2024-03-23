@@ -16,4 +16,6 @@ public class RedisConst {
     public static final String CATEGORY_ONE = "category:one";
 
     public static final String PRODUCT_LOCK_SUFFIX = "product:lock";
+
+    public static final String CATEGORY_ONE_LOCK = "category:one:lock";
 }
