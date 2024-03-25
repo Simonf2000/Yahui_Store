@@ -18,4 +18,6 @@ public class RedisConst {
     public static final String PRODUCT_LOCK_SUFFIX = "product:lock";
 
     public static final String CATEGORY_ONE_LOCK = "category:one:lock";
+
+    public static final String PHONE_CODE_PREFIX = "phone:code:";
 }
