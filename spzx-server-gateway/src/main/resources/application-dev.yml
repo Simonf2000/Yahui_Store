@@ -3,6 +3,11 @@ server:
 spring:
   application:
     name: spzx-server-gateway
+  data:
+    redis:
+      host: 192.168.6.100
+      port: 6379
+      password: root
   cloud:
     nacos:
       discovery:
