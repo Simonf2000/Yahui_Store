@@ -47,4 +47,13 @@ public class UserInfoController {
         return Result.build(token, ResultCodeEnum.SUCCESS);
     }
 
+    @Operation(summary = "获取当前登录用户信息")
+    @GetMapping("/auth/getCurrentUserInfo")
+    public Result<UserInfoVo> getCurrentUserInfo(HttpServletRequest request) {
+        String token = request.getHeader("token");
+        UserInfoVo userInfoVo = userInfoService.getCurrentUserInfo(token) ;
+
+        return Result.build(userInfoVo , ResultCodeEnum.SUCCESS) ;
+    }
+
 }

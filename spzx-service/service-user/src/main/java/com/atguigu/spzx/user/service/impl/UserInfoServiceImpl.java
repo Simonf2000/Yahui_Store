@@ -8,6 +8,7 @@ import com.atguigu.spzx.model.dto.h5.UserLoginDto;
 import com.atguigu.spzx.model.dto.h5.UserRegisterDto;
 import com.atguigu.spzx.model.entity.user.UserInfo;
 import com.atguigu.spzx.model.vo.common.ResultCodeEnum;
+import com.atguigu.spzx.model.vo.h5.UserInfoVo;
 import com.atguigu.spzx.user.mapper.UserInfoMapper;
 import com.atguigu.spzx.user.service.UserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -119,4 +120,17 @@ public class UserInfoServiceImpl implements UserInfoService {
         return token;
     }
 
+    @Override
+    public UserInfoVo getCurrentUserInfo(String token) {
+        String userInfoJsonStr = redisTemplate.opsForValue().get(RedisConst.USER_LOGIN + token);
+        if(!StringUtils.hasText(userInfoJsonStr)){
+            throw new GuiguException(ResultCodeEnum.LOGIN_AUTH);
+        }
+        UserInfo userInfo = JSON.parseObject(userInfoJsonStr, UserInfo.class);
+        UserInfoVo vo = new UserInfoVo();
+        vo.setNickName(userInfo.getNickName());
+        vo.setAvatar(userInfo.getAvatar());
+        //BeanUtils.copyProperties(userInfo,vo);
+        return vo;
+    }
 }
