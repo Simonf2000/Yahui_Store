@@ -1,8 +1,10 @@
 package com.atguigu.spzx.user.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.nacos.common.utils.MD5Utils;
 import com.atguigu.spzx.common.constant.RedisConst;
 import com.atguigu.spzx.common.exception.GuiguException;
+import com.atguigu.spzx.model.dto.h5.UserLoginDto;
 import com.atguigu.spzx.model.dto.h5.UserRegisterDto;
 import com.atguigu.spzx.model.entity.user.UserInfo;
 import com.atguigu.spzx.model.vo.common.ResultCodeEnum;
@@ -12,9 +14,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.DigestUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.Date;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created with IntelliJ IDEA.
@@ -71,6 +76,47 @@ public class UserInfoServiceImpl implements UserInfoService {
         userInfo.setStatus(1);
 
         userInfoMapper.insert(userInfo);
+    }
+
+    @Override
+    public String login(UserLoginDto userLoginDto, String ip) {
+        String username = userLoginDto.getUsername();
+        String password = userLoginDto.getPassword();
+
+        //校验参数
+        if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
+            throw new GuiguException(ResultCodeEnum.DATA_ERROR);
+        }
+
+        //判断用户是否存在
+        UserInfo userInfo = userInfoMapper.getUserInfoByUserName(username);
+        if (null == userInfo) {
+            throw new GuiguException(ResultCodeEnum.LOGIN_ERROR);
+        }
+
+        //校验密码
+        String md5InputPassword = DigestUtils.md5DigestAsHex(password.getBytes());
+        if (!md5InputPassword.equals(userInfo.getPassword())) {
+            throw new GuiguException(ResultCodeEnum.LOGIN_ERROR);
+        }
+
+        //校验是否被禁用
+        if (userInfo.getStatus() == 0) {
+            throw new GuiguException(ResultCodeEnum.ACCOUNT_STOP);
+        }
+
+        //更新登录信息
+        userInfo.setLastLoginIp(ip);
+        Date date = new Date();
+        date.setHours(date.getHours() + 8);
+        userInfo.setLastLoginTime(date);
+        userInfoMapper.updateById(userInfo);
+
+        //生成令牌
+        String token = UUID.randomUUID().toString().replaceAll("-", "");
+        //保存用户信息到redis缓存
+        redisTemplate.opsForValue().set(RedisConst.USER_LOGIN + token, JSON.toJSONString(userInfo), 30, TimeUnit.DAYS);
+        return token;
     }
 
 }

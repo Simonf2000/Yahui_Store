@@ -20,4 +20,5 @@ public class RedisConst {
     public static final String CATEGORY_ONE_LOCK = "category:one:lock";
 
     public static final String PHONE_CODE_PREFIX = "phone:code:";
+    public static final String USER_LOGIN = "user:login:";
 }

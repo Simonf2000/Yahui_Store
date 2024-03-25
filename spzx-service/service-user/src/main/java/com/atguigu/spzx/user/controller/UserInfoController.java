@@ -39,5 +39,12 @@ public class UserInfoController {
         return Result.build(null , ResultCodeEnum.SUCCESS) ;
     }
 
+    @Operation(summary = "会员登录")
+    @PostMapping("/login")
+    public Result login(@RequestBody UserLoginDto userLoginDto, HttpServletRequest request) {
+        String ip = IpUtil.getIpAddress(request);
+        String token = userInfoService.login(userLoginDto, ip);
+        return Result.build(token, ResultCodeEnum.SUCCESS);
+    }
 
 }
