@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "商品列表管理")
 @RestController
-@RequestMapping(value="/api/product")
+@RequestMapping(value = "/api/product")
 @SuppressWarnings({"unchecked", "rawtypes"})
 @Slf4j
 public class ProductController {
@@ -47,22 +47,27 @@ public class ProductController {
                                                    @Parameter(name = "limit", description = "每页记录数", required = true) @PathVariable Integer limit,
                                                    @Parameter(name = "productSkuDto", description = "搜索条件对象", required = false) ProductSkuDto productSkuDto) {
         PageInfo<ProductSku> pageInfo = productService.findByPage(page, limit, productSkuDto);
-        return Result.build(pageInfo , ResultCodeEnum.SUCCESS) ;
+        return Result.build(pageInfo, ResultCodeEnum.SUCCESS);
     }
 
     @Operation(summary = "商品详情")
     @GetMapping("/item/{skuId}")
     public Result<ProductItemVo> item(@Parameter(name = "skuId", description = "商品skuId", required = true) @PathVariable Long skuId) {
         RBloomFilter<Object> bloomFilter = redissonClient.getBloomFilter(RedisConst.PRODUCT_BLOOM_FILTER);
-        if(!bloomFilter.contains(skuId)){
-            log.info("布隆过滤器中没有这个数据:skuId="+skuId);
-            return Result.build(null , ResultCodeEnum.SUCCESS);
+        if (!bloomFilter.contains(skuId)) {
+            log.info("布隆过滤器中没有这个数据:skuId=" + skuId);
+            return Result.build(null, ResultCodeEnum.SUCCESS);
         }
 
         ProductItemVo productItemVo = productService.item(skuId);
-        return Result.build(productItemVo , ResultCodeEnum.SUCCESS);
+        return Result.build(productItemVo, ResultCodeEnum.SUCCESS);
     }
 
-
+    @Operation(summary = "获取商品sku信息")
+    @GetMapping("/getBySkuId/{skuId}")
+    public ProductSku getBySkuId(@Parameter(name = "skuId", description = "商品skuId", required = true) @PathVariable Long skuId) {
+        ProductSku productSku = productService.getBySkuId(skuId);
+        return productSku;
+    }
 
 }

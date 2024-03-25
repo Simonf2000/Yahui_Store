@@ -55,6 +55,11 @@ public class ProductServiceImpl implements ProductService {
     RedissonClient redissonClient;
 
     @Override
+    public ProductSku getBySkuId(Long skuId) {
+        return productSkuMapper.getById(skuId);
+    }
+
+    @Override
     public PageInfo<ProductSku> findByPage(Integer page, Integer limit, ProductSkuDto productSkuDto) {
         PageHelper.startPage(page, limit);
         List<ProductSku> productSkuList = productMapper.findPage(productSkuDto);
