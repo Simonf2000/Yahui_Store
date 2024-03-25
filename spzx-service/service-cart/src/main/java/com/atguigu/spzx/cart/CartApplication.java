@@ -3,6 +3,7 @@ package com.atguigu.spzx.cart;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 
 /**
  * Created with IntelliJ IDEA.
@@ -12,6 +13,9 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
  * @Description:
  */
 @SpringBootApplication(exclude = DataSourceAutoConfiguration.class)  // 排除数据库的自动化配置，Cart微服务不需要访问数据库
+@EnableFeignClients(basePackages = {
+        "com.atguigu.spzx.feign.product"
+})
 public class CartApplication {
 
     public static void main(String[] args) {
