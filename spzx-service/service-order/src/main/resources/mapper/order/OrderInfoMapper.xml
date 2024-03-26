@@ -77,7 +77,8 @@
 
 
     <select id="findUserPage" resultMap="orderInfoMap">
-        select <include refid="columns" />
+        select
+        <include refid="columns"/>
         from order_info
         <where>
             <if test="userId != null">
@@ -89,5 +90,13 @@
             and is_deleted = 0
         </where>
         order by id desc
+    </select>
+
+    <select id="getByOrderNo" resultMap="orderInfoMap">
+        select
+        <include refid="columns"/>
+        from order_info
+        where
+        order_no = #{orderNo} and is_deleted = 0
     </select>
 </mapper>

@@ -72,4 +72,10 @@ public class OrderInfoController {
         return Result.build(pageInfo, ResultCodeEnum.SUCCESS);
     }
 
+    @Operation(summary = "获取订单信息")
+    @GetMapping("/auth/getOrderInfoByOrderNo/{orderNo}")
+    public Result<OrderInfo> getOrderInfoByOrderNo(@Parameter(name = "orderId", description = "订单id", required = true) @PathVariable String orderNo) {
+        OrderInfo orderInfo = orderInfoService.getByOrderNo(orderNo) ;
+        return Result.build(orderInfo, ResultCodeEnum.SUCCESS);
+    }
 }
