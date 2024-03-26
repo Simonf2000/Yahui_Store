@@ -16,6 +16,9 @@ spring:
     url: jdbc:mysql://192.168.6.100:3306/db_spzx?characterEncoding=utf-8&serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true
     username: root
     password: root
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    #time-zone: GMT+8
   # Redis的相关配置
   data:
     redis:
