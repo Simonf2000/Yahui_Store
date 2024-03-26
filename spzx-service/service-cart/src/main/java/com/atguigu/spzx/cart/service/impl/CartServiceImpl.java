@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 public class CartServiceImpl implements CartService {
 
     @Autowired
-    RedisTemplate<String, String> redisTemplate;
+    RedisTemplate<String,String> redisTemplate;
 
     @Autowired
     ProductFeignClient productFeignClient;
@@ -40,14 +40,14 @@ public class CartServiceImpl implements CartService {
         UserInfo userInfo = AuthContextUtil.getUserInfo();
         String cartKey = getCartKey(userInfo.getId());
         CartInfo cartInfo = null;
-        String cartInfoJsonStr = (String) redisTemplate.opsForHash().get(cartKey, Long.toString(skuId));
-        if (StringUtils.hasText(cartInfoJsonStr)) { //之前添加过这个商品
+        String cartInfoJsonStr = (String)redisTemplate.opsForHash().get(cartKey, Long.toString(skuId));
+        if(StringUtils.hasText(cartInfoJsonStr)){ //之前添加过这个商品
             cartInfo = JSON.parseObject(cartInfoJsonStr, CartInfo.class);
             cartInfo.setSkuNum(cartInfo.getSkuNum() + skuNum);
             cartInfo.setIsChecked(1);
             cartInfo.setCreateTime(new Date());
             cartInfo.setUpdateTime(new Date());
-        } else { //首次添加这个商品
+        }else{ //首次添加这个商品
             ProductSku productSku = productFeignClient.getBySkuId(skuId);
 
             cartInfo = new CartInfo();
@@ -61,7 +61,7 @@ public class CartServiceImpl implements CartService {
             cartInfo.setCreateTime(new Date());
             cartInfo.setUpdateTime(new Date());
         }
-        redisTemplate.opsForHash().put(cartKey, String.valueOf(skuId), JSON.toJSONString(cartInfo));
+        redisTemplate.opsForHash().put(cartKey,String.valueOf(skuId),JSON.toJSONString(cartInfo));
     }
 
 
@@ -70,13 +70,14 @@ public class CartServiceImpl implements CartService {
         UserInfo userInfo = AuthContextUtil.getUserInfo();
         String cartKey = getCartKey(userInfo.getId());
         List<Object> values = redisTemplate.opsForHash().values(cartKey);
-        if (!CollectionUtils.isEmpty(values)) {
-            return values.stream().map(cartInfoJsonObj -> JSON.parseObject(cartInfoJsonObj.toString(), CartInfo.class))
+        if(!CollectionUtils.isEmpty(values)){
+            return values.stream().map(cartInfoJsonObj -> JSON.parseObject(cartInfoJsonObj.toString(),CartInfo.class))
                     .sorted((o1, o2) -> o2.getCreateTime().compareTo(o1.getCreateTime()))
                     .collect(Collectors.toList());
         }
         return new ArrayList<>();
     }
+
 
     @Override
     public void deleteCart(Long skuId) {
@@ -85,8 +86,9 @@ public class CartServiceImpl implements CartService {
         String cartKey = getCartKey(userId);
 
         //获取缓存对象
-        redisTemplate.opsForHash().delete(cartKey, String.valueOf(skuId));
+        redisTemplate.opsForHash().delete(cartKey  ,String.valueOf(skuId)) ;
     }
+
 
     @Override
     public void checkCart(Long skuId, Integer isChecked) {
@@ -95,13 +97,14 @@ public class CartServiceImpl implements CartService {
         String cartKey = getCartKey(userId);
 
         Boolean hasKey = redisTemplate.opsForHash().hasKey(cartKey, String.valueOf(skuId));
-        if (hasKey) {
+        if(hasKey){
             Object cartInfoJsonObj = redisTemplate.opsForHash().get(cartKey, String.valueOf(skuId));
-            CartInfo cartInfo = JSON.parseObject(cartInfoJsonObj.toString(), CartInfo.class);
+            CartInfo cartInfo = JSON.parseObject(cartInfoJsonObj.toString(),CartInfo.class);
             cartInfo.setIsChecked(isChecked);
-            redisTemplate.opsForHash().put(cartKey, String.valueOf(skuId), JSON.toJSONString(cartInfo));
+            redisTemplate.opsForHash().put(cartKey,String.valueOf(skuId),JSON.toJSONString(cartInfo));
         }
     }
+
 
     @Override
     public void allCheckCart(Integer isChecked) {
@@ -110,17 +113,18 @@ public class CartServiceImpl implements CartService {
         String cartKey = getCartKey(userId);
 
         List<Object> values = redisTemplate.opsForHash().values(cartKey);
-        if (!CollectionUtils.isEmpty(values)) {
-            values.stream().map(cartInfoJsonObj -> {
+        if(!CollectionUtils.isEmpty(values)){
+            values.stream().map(cartInfoJsonObj->{
                 CartInfo cartInfo = JSON.parseObject(cartInfoJsonObj.toString(), CartInfo.class);
                 cartInfo.setIsChecked(1);
                 return cartInfo;
             }).forEach(cartInfo -> {
-                redisTemplate.opsForHash().put(cartKey, String.valueOf(cartInfo.getId()), JSON.toJSONString(cartInfo));
+                redisTemplate.opsForHash().put(cartKey,String.valueOf(cartInfo.getId()),JSON.toJSONString(cartInfo));
             });
         }
 
     }
+
 
     @Override
     public void clearCart() {
@@ -130,15 +134,16 @@ public class CartServiceImpl implements CartService {
         redisTemplate.delete(cartKey);
     }
 
+
     @Override
     public List<CartInfo> getAllCkecked() {
         // 获取当前登录的用户数据
         Long userId = AuthContextUtil.getUserInfo().getId();
         String cartKey = getCartKey(userId);
         List<Object> cartInfoJsonObjList = redisTemplate.opsForHash().values(cartKey);
-        if (!CollectionUtils.isEmpty(cartInfoJsonObjList)) {
-            return cartInfoJsonObjList.stream().map(cartInfoJsonObj -> JSON.parseObject(cartInfoJsonObj.toString(), CartInfo.class))
-                    .filter(cartInfo -> cartInfo.getIsChecked() == 1).collect(Collectors.toList());
+        if(!CollectionUtils.isEmpty(cartInfoJsonObjList)){
+            return cartInfoJsonObjList.stream().map(cartInfoJsonObj->JSON.parseObject(cartInfoJsonObj.toString(), CartInfo.class))
+                    .filter(cartInfo -> cartInfo.getIsChecked()==1).collect(Collectors.toList());
         }
         return new ArrayList<>();
     }

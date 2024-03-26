@@ -18,23 +18,43 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-/**
- * Created with IntelliJ IDEA.
- *
- * @Author: smionf
- * @Date: 2024/03/08/20:32
- * @Description:
- */
 @Service
 @Transactional
 @Slf4j
 public class CategoryServiceImpl implements CategoryService {
 
     @Autowired
-    private CategoryMapper categoryMapper;
+    CategoryMapper categoryMapper;
 
     @Autowired
-    private RedisTemplate<String , String> redisTemplate ;
+    RedisTemplate<String,String> redisTemplate;
+
+    //每次查询都从数据库中加载数据，效率比较低。
+//    @Override
+//    public List<Category> findOneCategory() {
+//        return categoryMapper.findOneCategory();
+//    }
+
+    //每次查询先访问redis缓存，如果有直接返回。如果没有再查询数据库，放在redis缓存中，给下次请求利用缓存，提高效率。
+/*    @Override
+    public List<Category> findOneCategory() {
+        //1.先访问缓存数据
+        String categoryListJsonStr = redisTemplate.opsForValue().get(RedisConst.CATEGORY_ONE);
+
+        if(StringUtils.hasText(categoryListJsonStr)){
+            List<Category> categoryList = JSON.parseArray(categoryListJsonStr, Category.class);
+            log.info("从Redis中找到了一级分类数据="+categoryList);
+            return categoryList;
+        }
+
+        //2.缓存中没有，从数据库中查找，然后，放在缓存中
+        List<Category> oneCategoryList = categoryMapper.findOneCategory();
+        redisTemplate.opsForValue().set(RedisConst.CATEGORY_ONE,JSON.toJSONString(oneCategoryList),7, TimeUnit.DAYS);
+        log.info("从数据库中查询到了所有的一级分类数据="+oneCategoryList);
+        return oneCategoryList;
+    }*/
+
+
 
     @GuiGuCache(
             cacheKey = RedisConst.CATEGORY_ONE,
@@ -46,9 +66,10 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryMapper.findOneCategory();
     }
 
-    @Cacheable(value = "category" , key = "'all'")
+    @Cacheable(value = "category" , key = "'all'") //  key = "category::all"   key如果不是表达式，而是常量值，需要用引号引起来
     @Override
     public List<Category> findCategoryTree() {
+
         //所有分类列表：703条
         List<Category> categoryList =  categoryMapper.findAll();
 
