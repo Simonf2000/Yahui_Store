@@ -183,5 +183,9 @@ public class OrderInfoServiceImpl implements OrderInfoService {
         return orderInfoId;
     }
 
+    @Override
+    public OrderInfo getOrderInfo(Long orderId) {
+        return orderInfoMapper.getById(orderId);
+    }
 
 }

@@ -79,5 +79,12 @@ public class CartController {
         return cartInfoList;
     }
 
+    // com.atguigu.spzx.cart.controller.CartController
+    @GetMapping(value = "/auth/deleteChecked")
+    public Result deleteChecked() {
+        cartService.deleteChecked() ;
+        return Result.build(null , ResultCodeEnum.SUCCESS) ;
+    }
+
 
 }
