@@ -215,4 +215,20 @@ public class OrderInfoServiceImpl implements OrderInfoService {
         return tradeVo;
     }
 
+    @Override
+    public PageInfo<OrderInfo> findUserPage(Integer page,
+                                            Integer limit,
+                                            Integer orderStatus) {
+        PageHelper.startPage(page, limit);
+        Long userId = AuthContextUtil.getUserInfo().getId();
+        List<OrderInfo> orderInfoList = orderInfoMapper.findUserPage(userId, orderStatus);
+
+        orderInfoList.forEach(orderInfo -> {
+            List<OrderItem> orderItem = orderItemMapper.findByOrderId(orderInfo.getId());
+            orderInfo.setOrderItemList(orderItem);
+        });
+
+        return new PageInfo<>(orderInfoList);
+    }
+
 }
