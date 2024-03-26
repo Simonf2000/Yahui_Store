@@ -49,4 +49,11 @@ public class OrderInfoController {
         return Result.build(orderInfo, ResultCodeEnum.SUCCESS);
     }
 
+    @Operation(summary = "立即购买")
+    @GetMapping("/auth/buy/{skuId}")
+    public Result<TradeVo> buy(@Parameter(name = "skuId", description = "商品skuId", required = true) @PathVariable Long skuId) {
+        TradeVo tradeVo = orderInfoService.buy(skuId);
+        return Result.build(tradeVo, ResultCodeEnum.SUCCESS);
+    }
+
 }
