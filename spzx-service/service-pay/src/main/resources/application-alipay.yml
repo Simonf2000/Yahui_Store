@@ -1,0 +1,8 @@
+spzx:
+  alipay:
+    alipay_url: https://openapi.alipay.com/gateway.do
+    app_id: 111111111111111
+    app_private_key: 111111111111
+    alipay_public_key: M11111111
+    return_payment_url: http://111111111/#/pages/money/paySuccess
+    notify_payment_url: http://y111111111111/api/order/alipay/callback/notify
