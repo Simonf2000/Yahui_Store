@@ -239,4 +239,24 @@ public class OrderInfoServiceImpl implements OrderInfoService {
         return orderInfo;
     }
 
+    @Transactional
+    @Override
+    public void updateOrderStatus(String orderNo, Integer payType) {
+
+        // 更新订单状态
+        OrderInfo orderInfo = orderInfoMapper.getByOrderNo(orderNo);
+        orderInfo.setOrderStatus(1);
+        orderInfo.setPayType(payType);
+        orderInfo.setPaymentTime(new Date());
+        orderInfoMapper.updateById(orderInfo);
+
+        // 记录日志
+        OrderLog orderLog = new OrderLog();
+        orderLog.setOrderId(orderInfo.getId());
+        orderLog.setProcessStatus(1);
+        orderLog.setNote("支付宝支付成功");
+        orderLogMapper.save(orderLog);
+    }
+
+
 }

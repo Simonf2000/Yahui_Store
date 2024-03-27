@@ -2,6 +2,7 @@ package com.atguigu.spzx.product.controller;
 
 import com.atguigu.spzx.common.constant.RedisConst;
 import com.atguigu.spzx.model.dto.h5.ProductSkuDto;
+import com.atguigu.spzx.model.dto.product.SkuSaleDto;
 import com.atguigu.spzx.model.entity.product.ProductSku;
 import com.atguigu.spzx.model.vo.common.Result;
 import com.atguigu.spzx.model.vo.common.ResultCodeEnum;
@@ -15,22 +16,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RBloomFilter;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-/**
- * Created with IntelliJ IDEA.
- *
- * @Author: smionf
- * @Date: 2024/03/09/18:05
- * @Description:
- */
+import java.util.List;
 
 @Tag(name = "商品列表管理")
 @RestController
-@RequestMapping(value = "/api/product")
+@RequestMapping(value="/api/product")
 @SuppressWarnings({"unchecked", "rawtypes"})
 @Slf4j
 public class ProductController {
@@ -47,21 +39,32 @@ public class ProductController {
                                                    @Parameter(name = "limit", description = "每页记录数", required = true) @PathVariable Integer limit,
                                                    @Parameter(name = "productSkuDto", description = "搜索条件对象", required = false) ProductSkuDto productSkuDto) {
         PageInfo<ProductSku> pageInfo = productService.findByPage(page, limit, productSkuDto);
-        return Result.build(pageInfo, ResultCodeEnum.SUCCESS);
+        return Result.build(pageInfo , ResultCodeEnum.SUCCESS) ;
     }
+
+
 
     @Operation(summary = "商品详情")
     @GetMapping("/item/{skuId}")
     public Result<ProductItemVo> item(@Parameter(name = "skuId", description = "商品skuId", required = true) @PathVariable Long skuId) {
+
+        //*****BloomFilter过滤器判断 start*************************************************
+
         RBloomFilter<Object> bloomFilter = redissonClient.getBloomFilter(RedisConst.PRODUCT_BLOOM_FILTER);
-        if (!bloomFilter.contains(skuId)) {
-            log.info("布隆过滤器中没有这个数据:skuId=" + skuId);
-            return Result.build(null, ResultCodeEnum.SUCCESS);
+        if(!bloomFilter.contains(skuId)){
+            log.info("布隆过滤器中没有这个数据:skuId="+skuId);
+            return Result.build(null , ResultCodeEnum.SUCCESS);
         }
+        //******BloomFilter过滤器判断 end***********暂时不动*************************************
+
+
 
         ProductItemVo productItemVo = productService.item(skuId);
-        return Result.build(productItemVo, ResultCodeEnum.SUCCESS);
+        return Result.build(productItemVo , ResultCodeEnum.SUCCESS);
     }
+
+
+
 
     @Operation(summary = "获取商品sku信息")
     @GetMapping("/getBySkuId/{skuId}")
@@ -70,4 +73,9 @@ public class ProductController {
         return productSku;
     }
 
+    @Operation(summary = "更新商品sku销量")
+    @PostMapping("/updateSkuSaleNum")
+    public Boolean updateSkuSaleNum(@RequestBody List<SkuSaleDto> skuSaleDtoList) {
+        return productService.updateSkuSaleNum(skuSaleDtoList);
+    }
 }

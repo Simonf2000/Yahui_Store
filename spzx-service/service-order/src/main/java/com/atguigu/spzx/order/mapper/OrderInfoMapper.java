@@ -21,4 +21,6 @@ public interface OrderInfoMapper {
     List<OrderInfo> findUserPage(Long userId, Integer orderStatus);
 
     OrderInfo getByOrderNo(String orderNo);
+
+    void updateById(OrderInfo orderInfo);
 }

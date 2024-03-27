@@ -167,28 +167,26 @@ public class ProductServiceImpl implements ProductService {
         productMapper.updateById(product);
     }
 
+
     @Override
     public void updateStatus(Long id, Integer status) {
         Product product = new Product();
         product.setId(id);
-
-        if (status == 1) {
+        if(status == 1) {
             product.setStatus(1);
         } else {
             product.setStatus(-1);
         }
-
         productMapper.updateById(product);
-
-        //商品上架：修改product和product_sku 这两个表的status=1
-        productSkuMapper.updateStatusByProductId(id, status);
-
-        //根据商品id查询所有skuId集合，将id存储到布隆过滤器中
-        List<Long> skuIdList = productSkuMapper.findSkuIdListByProductId(id);
-
-        for (Long skuId : skuIdList) {
-            RBloomFilter<Object> bloomFilter = redissonClient.getBloomFilter(RedisConst.PRODUCT_BLOOM_FILTER);
-            bloomFilter.add(skuId);
+        productSkuMapper.updateStatusByProductId(id,status);
+        if(status == 1){
+            List<Long> skuIdList = productSkuMapper.findSkuIdListByProductId(id);
+            for (Long skuId : skuIdList) {
+                // 将商品skuId保存到布隆过滤器中
+                RBloomFilter<Object> bloomFilter = redissonClient
+                        .getBloomFilter(RedisConst.PRODUCT_BLOOM_FILTER);
+                bloomFilter.add(skuId);
+            }
         }
     }
 }

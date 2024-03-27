@@ -27,17 +27,24 @@
     </select>
 
     <select id="getById" resultMap="productSkuMap">
-        select <include refid="columns" />
+        select
+        <include refid="columns"/>
         from product_sku
         where
         id = #{id}
     </select>
 
     <select id="findByProductId" resultMap="productSkuMap">
-        select <include refid="columns" />
+        select
+        <include refid="columns"/>
         from product_sku
         where
         product_id = #{productId}
     </select>
+
+    <update id="updateSale">
+        update product_sku set sale_num = sale_num + #{num}, stock_num = stock_num - #{num}, update_time = now() where
+        id = #{skuId} and is_deleted = 0
+    </update>
 
 </mapper>

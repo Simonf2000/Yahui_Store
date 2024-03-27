@@ -19,4 +19,6 @@ public interface ProductSkuMapper {
     ProductSku getById(Long id);
 
     List<ProductSku> findByProductId(Long productId);
+
+    void updateSale(Long skuId, Integer num);
 }

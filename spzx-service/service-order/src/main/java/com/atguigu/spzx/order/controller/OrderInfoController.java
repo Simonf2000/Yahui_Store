@@ -78,4 +78,11 @@ public class OrderInfoController {
         OrderInfo orderInfo = orderInfoService.getByOrderNo(orderNo) ;
         return Result.build(orderInfo, ResultCodeEnum.SUCCESS);
     }
+
+    @Operation(summary = "更新订单支付状态")
+    @GetMapping("/auth/updateOrderStatusPayed/{orderNo}/{payType}")
+    public Result updateOrderStatus(@PathVariable(value = "orderNo") String orderNo , @PathVariable(value = "payType") Integer payType) {
+        orderInfoService.updateOrderStatus(orderNo , payType);
+        return Result.build(null , ResultCodeEnum.SUCCESS) ;
+    }
 }

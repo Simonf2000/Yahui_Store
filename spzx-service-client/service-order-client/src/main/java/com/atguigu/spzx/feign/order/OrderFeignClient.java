@@ -19,4 +19,6 @@ public interface OrderFeignClient {
     @GetMapping("/api/order/orderInfo/auth/getOrderInfoByOrderNo/{orderNo}")
     public Result<OrderInfo> getOrderInfoByOrderNo(@PathVariable String orderNo) ;
 
+    @GetMapping("/api/order/orderInfo/auth/updateOrderStatusPayed/{orderNo}/{payType}")
+    public abstract Result updateOrderStatus(@PathVariable(value = "orderNo") String orderNo , @PathVariable(value = "payType") Integer payType);
 }

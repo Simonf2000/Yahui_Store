@@ -6,7 +6,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"com.atguigu.spzx.order","com.atguigu.spzx.feign.product"})
 @EnableFeignClients(basePackages = {
         "com.atguigu.spzx.feign.cart",
         "com.atguigu.spzx.feign.user",

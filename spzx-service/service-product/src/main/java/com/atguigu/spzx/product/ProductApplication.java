@@ -18,11 +18,9 @@ import org.springframework.context.annotation.Import;
 @Import(value = {
         Knife4jConfig.class, GuiguCacheAspect.class
 })
-@EnableCaching
+@EnableCaching //开启缓存功能
 public class ProductApplication {
-
     public static void main(String[] args) {
-        SpringApplication.run(ProductApplication.class, args);
+        SpringApplication.run(ProductApplication.class);
     }
-
 }
